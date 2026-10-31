@@ -5,3 +5,8 @@ https://www.youtube.com/watch?v=MTbP-L71Qm4
 https://www.youtube.com/watch?v=cLS1TmofH6A
 
 ---
+
+## 2026_10_31_早上
+https://www.youtube.com/watch?v=fuawQ0qsElI
+
+---
