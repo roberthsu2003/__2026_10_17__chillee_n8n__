@@ -22,7 +22,10 @@ https://www.youtube.com/watch?v=5hpcsnuW6do
 
 ---
 
-## 2026_11_13_早上
+## 2026_11_14_早上
 https://www.youtube.com/watch?v=22tNd3Z5OWs
+
+## 2026_11_14_下午
+https://www.youtube.com/watch?v=H6r97g8X8kc
 
 ---
