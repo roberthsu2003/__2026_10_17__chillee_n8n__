@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1aoOHk9GfFcwC9M1fEjnW6I3fZktxUau4"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        -64
+      ],
+      "id": "1eb5cc61-d83c-4b36-9f58-54a64dfc5dad",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HacKiKvmSlXEaOgq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "order-lunch",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "13729d27-0cc3-43cb-82f9-0a4ac6278d3e",
+      "name": "開啟訂便當頁面",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -64
+      ],
+      "webhookId": "96d981e0-8e3d-4e79-9eda-746b0ec86058"
+    },
+    {
+      "parameters": {
+        "jsCode": "const values = items.map(item => Object.values(item.json).find(v => v !== undefined && v !== null && String(v).trim() !== '')).filter(v => v !== undefined);\nconst unique = [...new Set(values.map(v => String(v)))];\nconst options = unique.map(v => `<option value=\"${v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;')}\">${v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</option>`).join('');\nconst html = `<!doctype html><html lang=\"zh-Hant\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>訂便當系統</title><style>body{font-family:Arial,sans-serif;max-width:600px;margin:40px auto;padding:20px}label{display:block;margin-top:16px;font-weight:bold}input,select,button{width:100%;padding:10px;margin-top:6px;box-sizing:border-box;font-size:16px}button{margin-top:24px;cursor:pointer}</style></head><body><h1>訂便當系統</h1><p>請選擇您要訂購的便當。</p><form method=\"post\" action=\"/webhook/order-lunch-submit\"><label>姓名<input name=\"姓名\" required></label><label>品項<select name=\"品項\" required><option value=\"\">請選擇品項</option>${options}</select></label><button type=\"submit\">送出訂單</button></form></body></html>`;\nreturn [{json:{html}}];"
+      },
+      "id": "183047d0-c9a5-4b59-a4e4-9a35d564ab4b",
+      "name": "建立動態訂購表單",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "fc462903-781b-46fe-b108-4611568af303",
+      "name": "顯示訂購表單",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        288,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        -64
+      ],
+      "id": "f04a72ea-d77d-4b7f-aa63-bf0932c839ba",
+      "name": "取出便當店資料"
+    }
+  ],
+  "connections": {
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "取出便當店資料",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "開啟訂便當頁面": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "建立動態訂購表單": {
+      "main": [
+        [
+          {
+            "node": "顯示訂購表單",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取出便當店資料": {
+      "main": [
+        [
+          {
+            "node": "建立動態訂購表單",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "34a9b54f62417a818a10684adc5cbe744d94d6f1cefb2ce6025508b33f813b7a"
+  }
+}
